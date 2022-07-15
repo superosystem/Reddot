@@ -54,4 +54,12 @@ public class User {
 
 //    @OneToMany(mappedBy = "user")
 //    private List<Subreddit> subreddits;
+
+    public User(String username, String password, String email, Instant createdAt, boolean enabled) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.createdAt = createdAt;
+        this.enabled = enabled;
+    }
 }

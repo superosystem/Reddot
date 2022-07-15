@@ -19,7 +19,7 @@ import java.time.Instant;
 public class Vote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long voteId;
 
     @Column(name = "vote_type")
     private VoteType voteType;
