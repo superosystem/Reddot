@@ -15,6 +15,7 @@
 	<description>Backend for Reddit Web with Spring Framework</description>
 	<properties>
 		<java.version>11</java.version>
+		<org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -45,6 +46,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${org.mapstruct.version}</version>
+		</dependency>
+		<!-- For Displaying time as Relative Time Ago ("Posted 1 Day ago")-->
+		<dependency>
+			<groupId>com.github.marlonlom</groupId>
+			<artifactId>timeago</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+
 
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
@@ -97,7 +110,7 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.17.2</version>
+			<version>3.23.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -107,13 +120,27 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
 				<configuration>
-					<excludes>
-						<exclude>
+					<source>11</source> <!-- depending on your project -->
+					<target>11</target> <!-- depending on your project -->
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
+						</path>
+						<!-- other annotation processors -->
+						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
+							<version>1.18.8</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>

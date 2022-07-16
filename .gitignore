@@ -45,3 +45,10 @@ build/
 ### Database ###
 my_db/
 my_db
+.my_db
+
+### KeyStore ###
+/src/main/resources/app.key
+/src/main/resources/app.pub
+!**/src/main/resources/app.key
+!**/src/main/resources/app.pub
