@@ -36,8 +36,7 @@ build/
 ### Env ###
 .env
 /.env
-/src/main/resources/env
-!**/src/main/resources/.env.properties
+
 
 /.env.properties
 
@@ -50,5 +49,4 @@ my_db
 ### KeyStore ###
 /src/main/resources/app.key
 /src/main/resources/app.pub
-!**/src/main/resources/app.key
-!**/src/main/resources/app.pub
+
