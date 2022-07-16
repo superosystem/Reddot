@@ -21,7 +21,6 @@ public class VerificationToken {
     @Column(name = "expiry_date")
     private Timestamp expiryDate;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User userId;
+    @OneToOne(fetch = FetchType.LAZY)
+    private User user;
 }

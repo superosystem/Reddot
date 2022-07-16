@@ -31,7 +31,8 @@ public class MailService {
             javaMailSender.send(messagePreparator);
             log.info("Activation email sent!!");
         }catch(MailException exception) {
-            throw new BackendRedditException("Exception occurred when sending mail to " + notificationEmail.getRecipient());
+            log.error("Exception occurred when sending mail", exception);
+            throw new BackendRedditException("Exception occurred when sending mail to " + notificationEmail.getRecipient(), exception);
         }
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @Table(name = "refresh_token")
@@ -23,5 +24,5 @@ public class RefreshToken {
     private String token;
 
     @Column(name = "created_date")
-    private Timestamp createdDate;
+    private Instant createdDate;
 }
