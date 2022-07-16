@@ -4,62 +4,31 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
-import java.util.List;
 
-@Entity
-@Table(name = "user")
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "username")
-    @NotBlank(message = "username is required!")
+    @GeneratedValue(strategy = IDENTITY)
+    private Long userId;
+    @NotBlank(message = "Username is required")
     private String username;
-
-    @Column(name = "password")
-    @NotBlank(message = "password is required!")
+    @NotBlank(message = "Password is required")
     private String password;
-
-    @Column(name = "email")
     @Email
-    @NotEmpty(message = "email is required!")
+    @NotEmpty(message = "Email is required")
     private String email;
-
-    @Column(name = "created")
-    private Instant createdAt;
-
-    @Column(name = "enabled")
+    private Instant created;
     private boolean enabled;
-
-//    @OneToOne(mappedBy = "userId")
-//    private VerificationToken verificationToken;
-
-//    @OneToMany(mappedBy = "user")
-//    private List<Vote> votes;
-
-//    @OneToMany(fetch = FetchType.LAZY)
-//    private List<Post> posts;
-
-//    @OneToMany(mappedBy = "user")
-//    private List<Comment> comments;
-
-//    @OneToMany(mappedBy = "user")
-//    private List<Subreddit> subreddits;
-
-    public User(String username, String password, String email, Instant createdAt, boolean enabled) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.createdAt = createdAt;
-        this.enabled = enabled;
-    }
 }

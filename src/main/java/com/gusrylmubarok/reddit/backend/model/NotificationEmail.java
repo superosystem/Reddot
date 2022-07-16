@@ -12,3 +12,4 @@ public class NotificationEmail {
     private String recipient;
     private String body;
 }
+

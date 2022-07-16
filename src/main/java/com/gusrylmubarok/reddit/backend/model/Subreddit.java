@@ -10,35 +10,27 @@ import javax.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.List;
 
-@Entity
-@Table(name = "subreddit")
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Builder
 public class Subreddit {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
-
-    @Column(name = "name")
-    @NotBlank(message = "Community name is required!")
+    @NotBlank(message = "Community name is required")
     private String name;
-
-    @Column(name = "description")
-    @NotBlank(message = "Description is required!")
+    @NotBlank(message = "Description is required")
     private String description;
-
-    @Column(name = "created_date")
+    @OneToMany(fetch = LAZY)
+    private List<Post> posts;
     private Instant createdDate;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne(fetch = LAZY)
     private User user;
-
-//    @OneToMany(mappedBy = "subreddit")
-//    private List<Post> posts;
-
 }
 
 

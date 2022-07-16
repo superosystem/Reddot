@@ -14,8 +14,9 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class MailService {
-    private final JavaMailSender javaMailSender;
+class MailService {
+
+    private final JavaMailSender mailSender;
     private final MailContentBuilder mailContentBuilder;
 
     @Async
@@ -28,11 +29,12 @@ public class MailService {
             messageHelper.setText(notificationEmail.getBody());
         };
         try {
-            javaMailSender.send(messagePreparator);
+            mailSender.send(messagePreparator);
             log.info("Activation email sent!!");
-        }catch(MailException exception) {
-            log.error("Exception occurred when sending mail", exception);
-            throw new BackendRedditException("Exception occurred when sending mail to " + notificationEmail.getRecipient(), exception);
+        } catch (MailException e) {
+            log.error("Exception occurred when sending mail", e);
+            throw new BackendRedditException("Exception occurred when sending mail to " + notificationEmail.getRecipient(), e);
         }
     }
+
 }

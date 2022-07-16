@@ -26,6 +26,7 @@ public abstract class PostMapper {
     @Autowired
     private AuthService authService;
 
+
     @Mapping(target = "createdDate", expression = "java(java.time.Instant.now())")
     @Mapping(target = "description", source = "postRequest.description")
     @Mapping(target = "subreddit", source = "subreddit")
@@ -68,4 +69,5 @@ public abstract class PostMapper {
         }
         return false;
     }
+
 }

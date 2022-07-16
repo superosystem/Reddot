@@ -5,8 +5,8 @@ import com.gusrylmubarok.reddit.backend.model.RefreshToken;
 import com.gusrylmubarok.reddit.backend.repository.RefreshTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -14,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Transactional
 public class RefreshTokenService {
+
     private final RefreshTokenRepository refreshTokenRepository;
 
     public RefreshToken generateRefreshToken() {

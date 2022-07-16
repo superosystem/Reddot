@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class SubredditService {
+
     private final SubredditRepository subredditRepository;
     private final SubredditMapper subredditMapper;
 
@@ -24,7 +26,6 @@ public class SubredditService {
     public SubredditDto save(SubredditDto subredditDto) {
         Subreddit save = subredditRepository.save(subredditMapper.mapDtoToSubreddit(subredditDto));
         subredditDto.setId(save.getId());
-
         return subredditDto;
     }
 
@@ -33,7 +34,7 @@ public class SubredditService {
         return subredditRepository.findAll()
                 .stream()
                 .map(subredditMapper::mapSubredditToDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public SubredditDto getSubreddit(Long id) {

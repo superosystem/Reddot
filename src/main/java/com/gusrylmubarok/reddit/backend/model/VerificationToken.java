@@ -1,26 +1,27 @@
 package com.gusrylmubarok.reddit.backend.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.Instant;
 
-@Entity
-@Table(name = "token")
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "token")
 public class VerificationToken {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
-
-    @Column(name = "token")
     private String token;
-
-    @Column(name = "expiry_date")
-    private Timestamp expiryDate;
-
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = LAZY)
     private User user;
+    private Instant expiryDate;
 }
