@@ -100,9 +100,9 @@ public class UserRepositoryTest {
         User user2 = new User("test1", "passwd2", "test2@gmail.com", Instant.now(), true);
         entityManager.persist(user2);
 
-        Iterable<User> foundUser = userRepository.findByUsername("test1");
+        Optional<User> foundUser = userRepository.findByUsername("test1");
 
-        assertThat(foundUser).hasSize(2).contains(user1, user2);
+        assertThat(foundUser).isNotEmpty();
 
     }
 
