@@ -1,5 +1,7 @@
 package com.gusrylmubarok.reddit.backend.controller;
 
+import com.gusrylmubarok.reddit.backend.dto.AuthenticationResponseDTO;
+import com.gusrylmubarok.reddit.backend.dto.LoginRequestDTO;
 import com.gusrylmubarok.reddit.backend.dto.RegisterRequestDTO;
 import com.gusrylmubarok.reddit.backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +25,10 @@ public class AuthController {
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
         authService.verifyAccount(token);
         return new ResponseEntity<>("Account Activated Successfully", HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public AuthenticationResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
+        return authService.login(loginRequest);
     }
 }

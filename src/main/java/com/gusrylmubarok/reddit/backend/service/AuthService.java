@@ -1,5 +1,7 @@
 package com.gusrylmubarok.reddit.backend.service;
 
+import com.gusrylmubarok.reddit.backend.dto.AuthenticationResponseDTO;
+import com.gusrylmubarok.reddit.backend.dto.LoginRequestDTO;
 import com.gusrylmubarok.reddit.backend.dto.RegisterRequestDTO;
 import com.gusrylmubarok.reddit.backend.exceptions.BackendRedditException;
 import com.gusrylmubarok.reddit.backend.model.NotificationEmail;
@@ -7,8 +9,13 @@ import com.gusrylmubarok.reddit.backend.model.User;
 import com.gusrylmubarok.reddit.backend.model.VerificationToken;
 import com.gusrylmubarok.reddit.backend.repository.UserRepository;
 import com.gusrylmubarok.reddit.backend.repository.VerificationTokenRepository;
+import com.gusrylmubarok.reddit.backend.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +35,8 @@ public class AuthService {
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
     private final MailContentBuilder mailContentBuilder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Transactional
     public void signup(RegisterRequestDTO registerRequestDTO) {
@@ -38,11 +47,9 @@ public class AuthService {
         user.setCreatedAt(Instant.now());
         // Set enabled to false for authentication via email;
         user.setEnabled(false);
-
         userRepository.save(user);
 
         String token = generatedVerificationToken(user);
-
         String message = mailContentBuilder.build("Thank you for signing up to Spring Reddit, please click on the below url to activate your account : "
                 + ACTIVATION_EMAIL + "/" + token);
         mailService.sendMail(new NotificationEmail("Please Activate your account", user.getEmail(), message));
@@ -53,6 +60,16 @@ public class AuthService {
         verificationTokenOptional.orElseThrow(() -> new BackendRedditException("Invalid token!"));
 
     }
+    public AuthenticationResponseDTO login(LoginRequestDTO loginRequest) {
+        Authentication authenticate = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        String authenticationToken = jwtProvider.generateToken(authenticate);
+        return new AuthenticationResponseDTO(authenticationToken, loginRequest.getUsername());
+    }
+
+
     // fetch User enabled
     @Transactional
     private void fetchUserAndEnable(VerificationToken verificationToken) {
@@ -60,7 +77,6 @@ public class AuthService {
         User user = userRepository.findByUsername(username).orElseThrow(()
                 -> new BackendRedditException("User not found id - " + username));
         user.setEnabled(true);
-
         userRepository.save(user);
     }
     // Generate Token for verification that will send via email
