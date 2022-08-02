@@ -1,1 +1,1 @@
-# Reddit Website
+# sample REST API like Reddit Social Media with Spring Framework
