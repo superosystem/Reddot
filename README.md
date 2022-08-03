@@ -1,6 +1,14 @@
 # REST API like Reddit Social Media with Spring Framework
 Example API like Reddit Social Media with Spring Framework [Spring Boot, Spring Data, Spring Security, PostgreSQL].
 
+<!-- TODO -->
+## TODO
+
+- [ ] Add Unit Test
+- [ ] Add Integration Test
+
+See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+
 ## API Spec
 ### Authentication
 Some API must use this authentication.
