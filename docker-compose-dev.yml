@@ -3,19 +3,19 @@ version: '2.6'
 services:
   db:
     container_name: 'redditdb'
-    image: mysql:8.0
+    image: postgres:14
     restart: always
     environment:
-      MYSQL_DATABASE: 'redditdb'
-      MYSQL_USER: '${DB_USERNAME}'
-      MYSQL_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD}'
+      POSTGRES_DB: 'redditdb'
+      POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+      PGDATA: '/var/lib/postgresql/data/pgdata'
     ports:
-      - '3306:3306'
+      - '5432:5432'
     expose:
-      - '3306'
+      - '5432'
     volumes:
-      - "${PWD}/my_db:/var/lib/mysql"
+      - "${PWD}/local_database:/var/lib/postgres/data"
 
 volumes:
-  my_db:
+  local_database:

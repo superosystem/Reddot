@@ -1,74 +1,118 @@
 package com.gusrylmubarok.reddit.backend.service;
 
-import com.gusrylmubarok.reddit.backend.dto.PostRequest;
-import com.gusrylmubarok.reddit.backend.dto.PostResponse;
+import com.gusrylmubarok.reddit.backend.dto.request.PostRequest;
+import com.gusrylmubarok.reddit.backend.dto.response.PostResponse;
 import com.gusrylmubarok.reddit.backend.exceptions.PostNotFoundException;
 import com.gusrylmubarok.reddit.backend.exceptions.SubredditNotFoundException;
-import com.gusrylmubarok.reddit.backend.mapper.PostMapper;
-import com.gusrylmubarok.reddit.backend.model.Post;
-import com.gusrylmubarok.reddit.backend.model.Subreddit;
-import com.gusrylmubarok.reddit.backend.model.User;
-import com.gusrylmubarok.reddit.backend.repository.PostRepository;
-import com.gusrylmubarok.reddit.backend.repository.SubredditRepository;
-import com.gusrylmubarok.reddit.backend.repository.UserRepository;
+import com.gusrylmubarok.reddit.backend.model.*;
+import com.gusrylmubarok.reddit.backend.repository.*;
+import com.gusrylmubarok.reddit.backend.util.TimeAgoUtils;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.time.Instant;
+import java.util.Date;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 @Transactional
 public class PostService {
 
     private final PostRepository postRepository;
     private final SubredditRepository subredditRepository;
+    private final CommentRepository commentRepository;
+    private final VoteRepository voteRepository;
     private final UserRepository userRepository;
     private final AuthService authService;
-    private final PostMapper postMapper;
 
-    public void save(PostRequest postRequest) {
-        Subreddit subreddit = subredditRepository.findByName(postRequest.getSubredditName())
-                .orElseThrow(() -> new SubredditNotFoundException(postRequest.getSubredditName()));
-        postRepository.save(postMapper.map(postRequest, subreddit, authService.getCurrentUser()));
+    public PostResponse save(PostRequest postRequest) throws Exception {
+        try{
+            Post post = postRepository.save(mapToPost(postRequest));
+            return mapToPostResponse(post);
+        }catch(Exception e) {
+            throw new Exception("Can not create post" + e);
+        }
     }
 
     @Transactional(readOnly = true)
-    public PostResponse getPost(Long id) {
+    public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException(id.toString()));
-        return postMapper.mapToDto(post);
+                .orElseThrow(() -> new PostNotFoundException("Post not found with id-" + id));
+        return mapToPostResponse(post);
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPosts() {
-        return postRepository.findAll()
-                .stream()
-                .map(postMapper::mapToDto)
-                .collect(toList());
+    public Page<PostResponse> getAllPosts(Integer page) {
+        return postRepository.findAll(PageRequest.of(page, 100))
+                .map(this::mapToPostResponse);
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getPostsBySubreddit(Long subredditId) {
-        Subreddit subreddit = subredditRepository.findById(subredditId)
-                .orElseThrow(() -> new SubredditNotFoundException(subredditId.toString()));
-        List<Post> posts = postRepository.findAllBySubreddit(subreddit);
-        return posts.stream().map(postMapper::mapToDto).collect(toList());
+    public Page<PostResponse> getPostsBySubreddit(Integer page, Long id) {
+        Subreddit subreddit = subredditRepository.findById(id)
+                .orElseThrow(() -> new SubredditNotFoundException("Subreddit not found with id-" + id));
+        return postRepository
+                .findAllBySubreddit(subreddit, PageRequest.of(page, 100))
+                .map(this::mapToPostResponse);
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getPostsByUsername(String username) {
+    public Page<PostResponse> getPostsByUsername(String username, Integer page) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
-        return postRepository.findByUser(user)
-                .stream()
-                .map(postMapper::mapToDto)
-                .collect(toList());
+                .orElseThrow(() -> new UsernameNotFoundException("User is not found with username-" + username));
+        return postRepository
+                .findByUser(user, PageRequest.of(page, 100))
+                .map(this::mapToPostResponse);
+    }
+
+    private PostResponse mapToPostResponse(Post post) {
+        return PostResponse.builder()
+                .id(post.getPostId())
+                .postName(post.getPostTitle())
+                .url(post.getUrl())
+                .description(post.getDescription())
+                .userName(post.getUser().getUsername())
+                .subredditName(post.getSubreddit().getName())
+                .voteCount(post.getVoteCount())
+                .commentCount(commentRepository.findAllByPost(post).size())
+                .duration(TimeAgoUtils.toRelative(Date.from(post.getCreationDate()),
+                        new Date(new Date().getTime() + TimeUnit.SECONDS.toMillis(1))))
+                .upVote(checkVoteType(post, VoteType.UPVOTE))
+                .downVote(checkVoteType(post, VoteType.DOWNVOTE))
+                .build();
+    }
+
+    private Post mapToPost(PostRequest postRequest) {
+        // Fine Subreddit
+        Subreddit subreddit = subredditRepository.findByNameEquals(postRequest.getSubredditName())
+                .orElseThrow(() -> new SubredditNotFoundException(postRequest.getSubredditName()));;
+        // Make on post and add post into subreddit
+        Post newPost = Post.builder()
+                .postTitle(postRequest.getPostName())
+                .url(postRequest.getUrl())
+                .description(postRequest.getDescription())
+                .voteCount(0)
+                .user(authService.getCurrentUser())
+                .creationDate(Instant.now())
+                .subreddit(subreddit)
+                .build();
+        subreddit.getPosts().add(newPost);
+        return newPost;
+    }
+
+    private boolean checkVoteType(Post post, VoteType voteType) {
+        if(authService.isLoggedIn()) {
+            Optional<Vote> voteForPostForUser = voteRepository
+                    .findTopByPostAndUserOrderByVoteIdDesc(post, authService.getCurrentUser());
+            return voteForPostForUser.filter(vote ->
+                    vote.getVoteType().equals(voteType)).isPresent();
+        }
+        return false;
     }
 }

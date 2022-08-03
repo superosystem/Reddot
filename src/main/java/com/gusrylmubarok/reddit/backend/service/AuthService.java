@@ -1,15 +1,15 @@
 package com.gusrylmubarok.reddit.backend.service;
 
-import com.gusrylmubarok.reddit.backend.dto.AuthenticationResponse;
-import com.gusrylmubarok.reddit.backend.dto.LoginRequest;
-import com.gusrylmubarok.reddit.backend.dto.RefreshTokenRequest;
-import com.gusrylmubarok.reddit.backend.dto.RegisterRequest;
-import com.gusrylmubarok.reddit.backend.exceptions.BackendRedditException;
+import com.gusrylmubarok.reddit.backend.dto.response.AuthenticationResponse;
+import com.gusrylmubarok.reddit.backend.dto.request.LoginRequest;
+import com.gusrylmubarok.reddit.backend.dto.request.RefreshTokenRequest;
+import com.gusrylmubarok.reddit.backend.dto.request.RegisterRequest;
+import com.gusrylmubarok.reddit.backend.exceptions.ActivationException;
+import com.gusrylmubarok.reddit.backend.model.AccountVerificationToken;
 import com.gusrylmubarok.reddit.backend.model.NotificationEmail;
 import com.gusrylmubarok.reddit.backend.model.User;
-import com.gusrylmubarok.reddit.backend.model.VerificationToken;
 import com.gusrylmubarok.reddit.backend.repository.UserRepository;
-import com.gusrylmubarok.reddit.backend.repository.VerificationTokenRepository;
+import com.gusrylmubarok.reddit.backend.repository.AccountVerificationTokenRepository;
 import com.gusrylmubarok.reddit.backend.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -34,7 +34,7 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final VerificationTokenRepository verificationTokenRepository;
+    private final AccountVerificationTokenRepository accountVerificationToken;
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
@@ -45,8 +45,8 @@ public class AuthService {
         user.setUsername(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setCreated(Instant.now());
-        user.setEnabled(false);
+        user.setCreationDate(Instant.now());
+        user.setAccountStatus(false);
 
         userRepository.save(user);
 
@@ -55,36 +55,6 @@ public class AuthService {
                 user.getEmail(), "Thank you for signing up to Spring Reddit, " +
                 "please click on the below url to activate your account : " +
                 "http://localhost:8080/api/v1/auth/accountVerification/" + token));
-    }
-
-    @Transactional(readOnly = true)
-    public User getCurrentUser() {
-        Jwt principal = (Jwt) SecurityContextHolder.
-                getContext().getAuthentication().getPrincipal();
-        return userRepository.findByUsername(principal.getSubject())
-                .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getSubject()));
-    }
-
-    private void fetchUserAndEnable(VerificationToken verificationToken) {
-        String username = verificationToken.getUser().getUsername();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new BackendRedditException("User not found with name - " + username));
-        user.setEnabled(true);
-        userRepository.save(user);
-    }
-
-    private String generateVerificationToken(User user) {
-        String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(user);
-
-        verificationTokenRepository.save(verificationToken);
-        return token;
-    }
-
-    public void verifyAccount(String token) {
-        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
-        fetchUserAndEnable(verificationToken.orElseThrow(() -> new BackendRedditException("Invalid Token")));
     }
 
     public AuthenticationResponse login(LoginRequest loginRequest) {
@@ -98,6 +68,38 @@ public class AuthService {
                 .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
                 .username(loginRequest.getUsername())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public User getCurrentUser() {
+        Jwt principal = (Jwt) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUsername(principal.getSubject())
+                .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getSubject()));
+    }
+
+    public void enableAccount(AccountVerificationToken token) {
+        String username = token.getUser().getUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ActivationException("User not found with username: " + username));
+        user.setAccountStatus(true);
+        userRepository.save(user);
+    }
+
+    private String generateVerificationToken(User user) {
+        String token = UUID.randomUUID().toString();
+        com.gusrylmubarok.reddit.backend.model.AccountVerificationToken accountVerificationToken = new com.gusrylmubarok.reddit.backend.model.AccountVerificationToken();
+        accountVerificationToken.setToken(token);
+        accountVerificationToken.setUser(user);
+
+        this.accountVerificationToken.save(accountVerificationToken);
+        return token;
+    }
+
+    public void verifyAccount(String token) {
+        Optional<AccountVerificationToken> verificationToken = accountVerificationToken.findByToken(token);
+        verificationToken.orElseThrow(() -> new ActivationException("Invalid Activation Token"));
+        enableAccount(verificationToken.get());
     }
 
     public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {

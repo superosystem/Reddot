@@ -42,11 +42,12 @@ build/
 
 
 ### Database ###
-my_db/
-my_db
-.my_db
+local_database/
+local_database
 
 ### KeyStore ###
-/src/main/resources/app.key
-/src/main/resources/app.pub
+/src/main/resources/keystore.jks
+
+### LOG ###
+application.log
 

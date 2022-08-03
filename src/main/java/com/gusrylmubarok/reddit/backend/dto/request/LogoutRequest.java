@@ -1,4 +1,4 @@
-package com.gusrylmubarok.reddit.backend.dto;
+package com.gusrylmubarok.reddit.backend.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefreshTokenRequest {
+public class LogoutRequest {
     @NotBlank
     private String refreshToken;
-    private String username;
 }

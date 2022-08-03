@@ -1,38 +1,36 @@
 package com.gusrylmubarok.reddit.backend.controller;
 
-import com.gusrylmubarok.reddit.backend.dto.CommentsDto;
+import com.gusrylmubarok.reddit.backend.dto.request.CommentRequest;
+import com.gusrylmubarok.reddit.backend.dto.response.CommentResponse;
 import com.gusrylmubarok.reddit.backend.service.CommentService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/api/v1/comments/")
+@RequestMapping("/api/v1/comments")
 @AllArgsConstructor
 public class CommentsController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Void> createComment(@RequestBody CommentsDto commentsDto) {
-        commentService.save(commentsDto);
-        return new ResponseEntity<>(CREATED);
+    public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest commentRequest) {
+        return new ResponseEntity<>(commentService.save(commentRequest), HttpStatus.CREATED);
     }
 
-    @GetMapping("/by-post/{postId}")
-    public ResponseEntity<List<CommentsDto>> getAllCommentsForPost(@PathVariable Long postId) {
-        return ResponseEntity.status(OK)
-                .body(commentService.getAllCommentsForPost(postId));
+    @GetMapping("/post/{id}")
+    public ResponseEntity<Page<CommentResponse>> getCommentsByPost(@PathVariable("id") Long id, @RequestParam Optional<Integer> page) {
+        return new ResponseEntity<>(commentService.getCommentsForPost(id, page.orElse(0)), HttpStatus.OK);
     }
 
-    @GetMapping("/by-user/{userName}")
-    public ResponseEntity<List<CommentsDto>> getAllCommentsForUser(@PathVariable String userName){
-        return ResponseEntity.status(OK)
-                .body(commentService.getAllCommentsForUser(userName));
+    @GetMapping("/user/{id}")
+    public ResponseEntity<Page<CommentResponse>> getCommentsByUser(@PathVariable("id") Long id,@RequestParam Optional<Integer> page) {
+        return new ResponseEntity<>(commentService.getCommentsForUser(id, page.orElse(0)), HttpStatus.OK);
     }
 
 }

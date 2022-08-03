@@ -1,9 +1,9 @@
 package com.gusrylmubarok.reddit.backend.controller;
 
-import com.gusrylmubarok.reddit.backend.dto.AuthenticationResponse;
-import com.gusrylmubarok.reddit.backend.dto.LoginRequest;
-import com.gusrylmubarok.reddit.backend.dto.RefreshTokenRequest;
-import com.gusrylmubarok.reddit.backend.dto.RegisterRequest;
+import com.gusrylmubarok.reddit.backend.dto.response.AuthenticationResponse;
+import com.gusrylmubarok.reddit.backend.dto.request.LoginRequest;
+import com.gusrylmubarok.reddit.backend.dto.request.RefreshTokenRequest;
+import com.gusrylmubarok.reddit.backend.dto.request.RegisterRequest;
 import com.gusrylmubarok.reddit.backend.service.AuthService;
 import com.gusrylmubarok.reddit.backend.service.RefreshTokenService;
 import lombok.AllArgsConstructor;
@@ -28,7 +28,7 @@ public class AuthController {
         return new ResponseEntity<>("User Registration Successful", OK);
     }
 
-    @GetMapping("accountVerification/{token}")
+    @GetMapping("/accountVerification/{token}")
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
         authService.verifyAccount(token);
         return new ResponseEntity<>("Account Activated Successfully", OK);

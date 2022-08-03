@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.Instant;
 
+
 @Data
 @Entity
 @AllArgsConstructor
@@ -19,5 +20,5 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String token;
-    private Instant createdDate;
+    private Instant creationDate;
 }

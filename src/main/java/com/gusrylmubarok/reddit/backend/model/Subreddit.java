@@ -10,26 +10,25 @@ import javax.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.List;
 
-import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.IDENTITY;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
+@Entity
 public class Subreddit {
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @SequenceGenerator(name = "SUB_GEN", sequenceName = "SEQ_SUB", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SUB_GEN")
     private Long id;
-    @NotBlank(message = "Community name is required")
+    @NotBlank(message = "Subreddit name is required")
+    @Column(unique = true)
     private String name;
-    @NotBlank(message = "Description is required")
+    @NotBlank(message = "Subreddit description is required")
     private String description;
-    @OneToMany(fetch = LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Post> posts;
-    private Instant createdDate;
-    @ManyToOne(fetch = LAZY)
+    private Instant creationDate;
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 }
 

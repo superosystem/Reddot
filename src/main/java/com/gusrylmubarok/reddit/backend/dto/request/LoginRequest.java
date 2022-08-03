@@ -1,4 +1,4 @@
-package com.gusrylmubarok.reddit.backend.dto;
+package com.gusrylmubarok.reddit.backend.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequest {
-
     private String username;
     private String password;
 }

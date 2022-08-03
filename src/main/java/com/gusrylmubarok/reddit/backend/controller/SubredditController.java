@@ -4,11 +4,12 @@ import com.gusrylmubarok.reddit.backend.dto.SubredditDto;
 import com.gusrylmubarok.reddit.backend.service.SubredditService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/subreddit")
@@ -19,22 +20,22 @@ public class SubredditController {
     private final SubredditService subredditService;
 
     @PostMapping
-    public ResponseEntity<SubredditDto> createSubreddit(@RequestBody SubredditDto subredditDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(subredditService.save(subredditDto));
+    public ResponseEntity<SubredditDto> createSubreddit(@RequestBody @Valid SubredditDto subredditDto)
+            throws Exception {
+        try {
+            return new ResponseEntity<>(subredditService.save(subredditDto), HttpStatus.OK);
+        }catch (Exception e) {
+            throw new Exception("Error creating subreddit");
+        }
     }
 
-    @GetMapping
-    public ResponseEntity<List<SubredditDto>> getAllSubreddits() {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(subredditService.getAll());
+    @GetMapping()
+    public ResponseEntity<Page<SubredditDto>> getAllSubreddits(@RequestParam(value = "page", defaultValue = "0",required = false) int page) {
+        return new ResponseEntity<>(subredditService.getAll(page), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SubredditDto> getSubreddit(@PathVariable Long id) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(subredditService.getSubreddit(id));
+        return new ResponseEntity<>(subredditService.getSubreddit(id), HttpStatus.OK);
     }
 }

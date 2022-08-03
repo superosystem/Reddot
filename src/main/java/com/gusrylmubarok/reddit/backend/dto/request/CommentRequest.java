@@ -1,4 +1,4 @@
-package com.gusrylmubarok.reddit.backend.dto;
+package com.gusrylmubarok.reddit.backend.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,13 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class SubredditDto {
+public class CommentRequest {
     private Long id;
-    private String name;
-    private String description;
-    private Integer numberOfPosts;
-
+    private String text;
+    private Long postId;
 }
