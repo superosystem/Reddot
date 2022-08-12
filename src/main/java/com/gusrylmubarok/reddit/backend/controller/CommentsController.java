@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -24,13 +25,13 @@ public class CommentsController {
     }
 
     @GetMapping("/post/{id}")
-    public ResponseEntity<Page<CommentResponse>> getCommentsByPost(@PathVariable("id") Long id, @RequestParam Optional<Integer> page) {
-        return new ResponseEntity<>(commentService.getCommentsForPost(id, page.orElse(0)), HttpStatus.OK);
+    public ResponseEntity<List<CommentResponse>> getCommentsByPost(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(commentService.getCommentsForPost(id), HttpStatus.OK);
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<Page<CommentResponse>> getCommentsByUser(@PathVariable("id") Long id,@RequestParam Optional<Integer> page) {
-        return new ResponseEntity<>(commentService.getCommentsForUser(id, page.orElse(0)), HttpStatus.OK);
+    public ResponseEntity<List<CommentResponse>> getCommentsByUser(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(commentService.getCommentsForUser(id), HttpStatus.OK);
     }
 
 }

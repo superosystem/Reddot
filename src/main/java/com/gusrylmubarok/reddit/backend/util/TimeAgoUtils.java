@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 @UtilityClass
 public class TimeAgoUtils {
     public static final Map<String, Long> times = new LinkedHashMap<>();
-
     static {
         times.put("year", TimeUnit.DAYS.toMillis(365));
         times.put("month", TimeUnit.DAYS.toMillis(30));

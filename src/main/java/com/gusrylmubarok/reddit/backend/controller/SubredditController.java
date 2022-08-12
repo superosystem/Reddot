@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/subreddit")
@@ -30,8 +31,8 @@ public class SubredditController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<SubredditDto>> getAllSubreddits(@RequestParam(value = "page", defaultValue = "0",required = false) int page) {
-        return new ResponseEntity<>(subredditService.getAll(page), HttpStatus.OK);
+    public ResponseEntity<List<SubredditDto>> getAllSubreddits() {
+        return new ResponseEntity<>(subredditService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

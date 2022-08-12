@@ -8,14 +8,13 @@ import com.gusrylmubarok.reddit.backend.model.*;
 import com.gusrylmubarok.reddit.backend.repository.*;
 import com.gusrylmubarok.reddit.backend.util.TimeAgoUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -48,26 +47,26 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostResponse> getAllPosts(Integer page) {
-        return postRepository.findAll(PageRequest.of(page, 100))
-                .map(this::mapToPostResponse);
+    public List<PostResponse> getAllPosts() {
+        return postRepository.findAll().stream()
+                .map(this::mapToPostResponse).toList();
     }
 
     @Transactional(readOnly = true)
-    public Page<PostResponse> getPostsBySubreddit(Integer page, Long id) {
+    public Optional<PostResponse> getPostsBySubreddit(Long id) {
         Subreddit subreddit = subredditRepository.findById(id)
                 .orElseThrow(() -> new SubredditNotFoundException("Subreddit not found with id-" + id));
         return postRepository
-                .findAllBySubreddit(subreddit, PageRequest.of(page, 100))
+                .findAllBySubreddit(subreddit)
                 .map(this::mapToPostResponse);
     }
 
     @Transactional(readOnly = true)
-    public Page<PostResponse> getPostsByUsername(String username, Integer page) {
+    public Optional<PostResponse> getPostsByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User is not found with username-" + username));
         return postRepository
-                .findByUser(user, PageRequest.of(page, 100))
+                .findByUser(user)
                 .map(this::mapToPostResponse);
     }
 
@@ -80,7 +79,7 @@ public class PostService {
                 .userName(post.getUser().getUsername())
                 .subredditName(post.getSubreddit().getName())
                 .voteCount(post.getVoteCount())
-                .commentCount(commentRepository.findAllByPost(post).size())
+                .commentCount((int) commentRepository.findAllByPost(post).stream().count())
                 .duration(TimeAgoUtils.toRelative(Date.from(post.getCreationDate()),
                         new Date(new Date().getTime() + TimeUnit.SECONDS.toMillis(1))))
                 .upVote(checkVoteType(post, VoteType.UPVOTE))

@@ -18,7 +18,7 @@ public class User {
     @Id
     @SequenceGenerator(name = "USER_GEN", sequenceName = "SEQ_USER", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_GEN")
-    private long userId;
+    private Long userId;
     @NotBlank(message = "Username is required")
     @Column(unique = true)
     private String username;

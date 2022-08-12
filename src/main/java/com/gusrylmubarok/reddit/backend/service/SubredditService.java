@@ -6,12 +6,11 @@ import com.gusrylmubarok.reddit.backend.model.Subreddit;
 import com.gusrylmubarok.reddit.backend.repository.SubredditRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -32,9 +31,9 @@ public class SubredditService {
     }
 
     @Transactional(readOnly = true)
-    public Page<SubredditDto> getAll(Integer page) {
-        return subredditRepository.findAll(PageRequest.of(page, 100))
-                .map(this::mapToSubredditDto);
+    public List<SubredditDto> getAll() {
+        return subredditRepository.findAll().stream()
+                .map(this::mapToSubredditDto).toList();
     }
 
     @Transactional(readOnly = true)
@@ -55,7 +54,7 @@ public class SubredditService {
 
     private Subreddit mapDtoToSubreddit(SubredditDto subredditDto){
         return Subreddit.builder()
-                .name("/r" + subredditDto.getName())
+                .name(subredditDto.getName())
                 .description(subredditDto.getDescription())
                 .creationDate(Instant.now())
                 .user(authService.getCurrentUser())

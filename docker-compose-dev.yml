@@ -1,7 +1,7 @@
 version: '2.6'
 
 services:
-  db:
+  postgres_db:
     container_name: 'redditdb'
     image: postgres:14
     restart: always
@@ -16,6 +16,23 @@ services:
       - '5432'
     volumes:
       - "${PWD}/local_database:/var/lib/postgres/data"
+
+  mysql_db:
+    container_name: 'mysqldb'
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'reddit-test-db'
+      MYSQL_USER: 'testuser'
+      MYSQL_PASSWORD: 'pass'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - "${PWD}/local_db:/var/lib/mysql"
+
 
 volumes:
   local_database:

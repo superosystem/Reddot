@@ -14,13 +14,13 @@ import com.gusrylmubarok.reddit.backend.repository.PostRepository;
 import com.gusrylmubarok.reddit.backend.repository.UserRepository;
 import com.gusrylmubarok.reddit.backend.util.TimeAgoUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -43,16 +43,16 @@ public class CommentService {
         mailService.sendMail(new NotificationEmail(user.getUsername() + " Commented on your post", user.getEmail(), message));
     }
 
-    public Page<CommentResponse> getCommentsForPost(Long id, Integer page) {
+    public List<CommentResponse> getCommentsForPost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("Post not found with id: " + id));
-        return commentRepository.findByPost(post, PageRequest.of(page, 100)).map(this::mapToCommentResponse);
+        return commentRepository.findByPost(post).stream().map(this::mapToCommentResponse).toList();
     }
 
-    public Page<CommentResponse> getCommentsForUser(Long id, Integer page) {
+    public List<CommentResponse> getCommentsForUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
-        return commentRepository.findAllByUser(user, PageRequest.of(page, 100)).map(this::mapToCommentResponse);
+        return commentRepository.findAllByUser(user).stream().map(this::mapToCommentResponse).toList();
     }
 
     public boolean containsSwearWords(String comment) {

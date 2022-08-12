@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -28,8 +29,8 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PostResponse>> getAllPosts(@RequestParam Optional<Integer> page) {
-        return new ResponseEntity<>(postService.getAllPosts(page.orElse(0)), HttpStatus.OK);
+    public ResponseEntity<List<PostResponse>> getAllPosts() {
+        return new ResponseEntity<>(postService.getAllPosts(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -38,14 +39,12 @@ public class PostController {
     }
 
     @GetMapping("/sub/{id}")
-    public ResponseEntity<Page<PostResponse>> getPostsBySubreddit(@PathVariable("id") Long id,
-                                                                  @RequestParam Optional<Integer> page) {
-        return new ResponseEntity<>(postService.getPostsBySubreddit(page.orElse(0), id), HttpStatus.OK);
+    public ResponseEntity<Optional<PostResponse>> getPostsBySubreddit(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(postService.getPostsBySubreddit(id), HttpStatus.OK);
     }
 
     @GetMapping("/user/{name}")
-    public ResponseEntity<Page<PostResponse>> getPostsByUsername(@PathVariable("name") String username,
-                                                                 @RequestParam Optional<Integer> page) {
-        return new ResponseEntity<>(postService.getPostsByUsername(username, page.orElse(0)), HttpStatus.OK);
+    public ResponseEntity<Optional<PostResponse>> getPostsByUsername(@PathVariable("name") String username) {
+        return new ResponseEntity<>(postService.getPostsByUsername(username), HttpStatus.OK);
     }
 }
