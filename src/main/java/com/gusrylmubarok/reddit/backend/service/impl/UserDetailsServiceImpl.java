@@ -1,4 +1,4 @@
-package com.gusrylmubarok.reddit.backend.service;
+package com.gusrylmubarok.reddit.backend.service.impl;
 
 import com.gusrylmubarok.reddit.backend.model.User;
 import com.gusrylmubarok.reddit.backend.repository.UserRepository;

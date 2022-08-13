@@ -4,9 +4,11 @@ import com.gusrylmubarok.reddit.backend.dto.response.AuthenticationResponse;
 import com.gusrylmubarok.reddit.backend.dto.request.LoginRequest;
 import com.gusrylmubarok.reddit.backend.dto.request.RefreshTokenRequest;
 import com.gusrylmubarok.reddit.backend.dto.request.RegisterRequest;
+import com.gusrylmubarok.reddit.backend.exceptions.ActivationException;
 import com.gusrylmubarok.reddit.backend.service.AuthService;
 import com.gusrylmubarok.reddit.backend.service.RefreshTokenService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,11 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
-        authService.signup(registerRequest);
+        try {
+            authService.signup(registerRequest);
+        }catch(ActivationException e) {
+            return new ResponseEntity<>("Email has already used", OK);
+        }
         return new ResponseEntity<>("User Registration Successful", OK);
     }
 
