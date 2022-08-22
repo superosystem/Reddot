@@ -1,4 +1,7 @@
 # REST API like Reddit Social Media with Spring Framework
+
+[![Reddit API Spring](https://github.com/gusrylmubarok/reddit-api-spring/actions/workflows/maven.yml/badge.svg)](https://github.com/gusrylmubarok/reddit-api-spring/actions/workflows/maven.yml)
+
 Example API like Reddit Social Media with Spring Framework [Spring Boot, Spring Data, Spring Security, PostgreSQL].
 
 <!-- TODO -->
