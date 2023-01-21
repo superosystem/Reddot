@@ -9,21 +9,20 @@ import java.util.*
 data class VerificationToken(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long?,
+    val id: Long?,
 
-    @Column(name = "token")
-    private var token: String,
+    @Column(name = "token") var token: String,
 
     @Column(name = "expiry_date")
-    private var expiryDate: Instant,
+    var expiryDate: Instant,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "id")
-    private var user: User,
+    var user: User,
 
     @Column(name = "created_at")
-    private var createdAt: Date,
+    var createdAt: Date,
 
     @Column(name = "updated_at")
-    private var updatedAt: Date?
+    var updatedAt: Date?
 )

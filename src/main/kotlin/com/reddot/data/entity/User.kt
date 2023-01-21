@@ -9,23 +9,23 @@ import java.util.*
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long?,
+    val id: Long?,
 
     @NotBlank(message = "username is not empty")
-    private var username: String,
+    var username: String,
 
     @NotBlank(message = "email is not empty")
-    private var email: String,
+    var email: String,
 
     @NotBlank(message = "password is not empty")
-    private var password: String,
+    var password: String,
 
     @Column(name = "is_enable")
-    private var enabled: Boolean,
+    var enabled: Boolean,
 
     @Column(name = "created_at")
-    private var createdAt: Date,
+    var createdAt: Date,
 
     @Column(name = "updated_at")
-    private var updatedAt: Date?
+    var updatedAt: Date?
 )

@@ -8,28 +8,28 @@ import java.util.*
 data class Post(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long,
+    val id: Long,
 
     @Column(name = "post_name")
-    private var postName: String,
+    var postName: String,
 
     @Column(name = "url")
-    private var url: String,
+    var url: String,
 
     @Column(name = "vote_count")
-    private var voteCount: Int,
+    var voteCount: Int,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "id")
-    private var user: User,
+    var user: User,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subredditId", referencedColumnName = "id")
-    private var subreddit: Subreddit,
+    var subreddit: Subreddit,
 
     @Column(name = "created_at")
-    private var createdAt: Date,
+    var createdAt: Date,
 
     @Column(name = "updated_at")
-    private var updatedAt: Date?
+    var updatedAt: Date?
 )

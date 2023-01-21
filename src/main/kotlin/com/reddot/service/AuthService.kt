@@ -5,4 +5,5 @@ import com.reddot.data.model.RegisterResponse
 
 interface AuthService {
     fun signup(registerRequest: RegisterRequest): RegisterResponse
+    fun verifyAccount(token: String): String
 }

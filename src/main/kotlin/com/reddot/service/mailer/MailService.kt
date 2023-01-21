@@ -6,6 +6,7 @@ import org.springframework.mail.MailException
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.mail.javamail.MimeMessagePreparator
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,8 +15,9 @@ class MailService(
     val mailContentBuilder: MailContentBuilder
 ) {
 
+    @Async
     fun sendMail(notificationEmail: NotificationEmail) {
-        val message: MimeMessagePreparator = MimeMessagePreparator { 
+        val message = MimeMessagePreparator {
             mimeMessage ->
             run {
                 val messageHelper = MimeMessageHelper(mimeMessage)
@@ -23,7 +25,7 @@ class MailService(
                 messageHelper.setTo(notificationEmail.recipient)
                 messageHelper.setSubject(notificationEmail.subject)
                 messageHelper.setText(mailContentBuilder.build(notificationEmail.body))
-            }  
+            }
         }
         try {
             mailSender.send(message)

@@ -9,22 +9,22 @@ import java.util.*
 data class Vote(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private val id: Long,
+    val id: Long,
 
     @Column(name = "vote_type")
-    private var voteType: VoteType,
+    var voteType: VoteType,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", referencedColumnName = "id")
-    private var post: Post,
+    var post: Post,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "id")
-    private var user: User,
+    var user: User,
 
     @Column(name = "created_at")
-    private var createdAt: Date,
+    var createdAt: Date,
 
     @Column(name = "updated_at")
-    private var updatedAt: Date?
+    var updatedAt: Date?
 )
