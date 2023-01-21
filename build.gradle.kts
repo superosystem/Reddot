@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.7.22"
 	kotlin("plugin.spring") version "1.7.22"
 	kotlin("plugin.jpa") version "1.7.22"
+	kotlin("plugin.serialization") version "1.7.22"
 }
 
 group = "com.reddot"
@@ -27,6 +28,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	// jsonwebtoken
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
@@ -35,12 +37,14 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.4.1")
 	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
-	compileOnly("org.projectlombok:lombok")
 	// for get relative time ago
-	implementation("com.github.marlonlom:timeago:4.0.3")
+	implementation("com.github.marlonlom:timeago:4.0.0")
+	// get dotenv
+	implementation("me.paulschwarz:spring-dotenv:2.5.4")
 	runtimeOnly("org.postgresql:postgresql")
-	annotationProcessor("org.projectlombok:lombok")
+	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }
