@@ -2,7 +2,6 @@ package com.reddot.repository
 
 import com.reddot.data.entity.User
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +21,7 @@ class UserRepositoryTests {
     @BeforeEach
     fun tearUp() {
         this.eUser = User(1, "User 1", "user1", "user1@test.com",
-            "user123456788", true, "USER", Date(), null)
+            "user123456788", true, "ROLE_USER", Date(), null)
     }
 
     @Test
@@ -35,7 +34,7 @@ class UserRepositoryTests {
     @Test
     fun shouldGetByUsername() {
         userRepository.save(eUser)
-        val act: Optional<User> = userRepository.findByUsername("user1")
+        val act: User = userRepository.findByUsername("user1")
         assertThat(act).isNotNull
     }
 }

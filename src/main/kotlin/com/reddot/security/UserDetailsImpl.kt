@@ -1,6 +1,5 @@
 package com.reddot.security
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.reddot.data.entity.User
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -10,7 +9,6 @@ class UserDetailsImpl() : UserDetails {
     private var username: String = ""
     private var password: String = ""
     private var role: String = ""
-    @JsonIgnore
     private var isEnable: Boolean = false
 
     constructor(username: String, password: String, role: String, isEnable: Boolean) : this() {
@@ -29,17 +27,18 @@ class UserDetailsImpl() : UserDetails {
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        val authorities = ArrayList<SimpleGrantedAuthority>()
+       val authorities = ArrayList<SimpleGrantedAuthority>()
         authorities.add(SimpleGrantedAuthority(this.role))
-        return authorities
-    }
 
-    override fun getUsername(): String {
-        return this.username
+        return authorities
     }
 
     override fun getPassword(): String {
         return this.password
+    }
+
+    override fun getUsername(): String {
+        return this.username
     }
 
     override fun isAccountNonExpired(): Boolean {

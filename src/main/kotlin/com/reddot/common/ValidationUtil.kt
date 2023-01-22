@@ -1,4 +1,4 @@
-package com.reddot.validation
+package com.reddot.common
 
 import jakarta.validation.ConstraintViolationException
 import jakarta.validation.Validator

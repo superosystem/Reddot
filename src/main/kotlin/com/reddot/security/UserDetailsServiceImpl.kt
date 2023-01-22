@@ -11,12 +11,11 @@ class UserDetailsServiceImpl(
     private val userRepository: UserRepository
 ) : UserDetailsService {
 
-    override fun loadUserByUsername(username: String): UserDetails  {
-        val user = userRepository.findByUsername(username)
-        if (user.isEmpty) {
-            throw ResourceNotFoundException("user is not found with $username")
+    override fun loadUserByUsername(username: String): UserDetails {
+        try {
+            return UserDetailsImpl.build(userRepository.findByUsername(username))
+        }catch(ex: Exception) {
+            throw ResourceNotFoundException("username is not found")
         }
-
-        return UserDetailsImpl.build(user.get())
     }
 }

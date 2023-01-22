@@ -1,6 +1,7 @@
 package com.reddot.controller
 
 import com.reddot.common.RestResult
+import com.reddot.data.model.LoginRequest
 import com.reddot.data.model.RegisterRequest
 import com.reddot.service.AuthService
 import jakarta.validation.ConstraintViolationException
@@ -31,6 +32,16 @@ class AuthController(val authService: AuthService) {
             return RestResult.build("account registration validate", HttpStatus.OK, result)
         } catch (ex: Exception) {
             return RestResult.build("account failed to create", HttpStatus.BAD_REQUEST, "verification account failes")
+        }
+    }
+
+    @PostMapping("/login")
+    fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<Any> {
+        try {
+            val result = authService.login(loginRequest)
+            return RestResult.build("authentication user successfully", HttpStatus.OK, result)
+        } catch (ex: Exception) {
+            return RestResult.build("username or password is wrong", HttpStatus.BAD_REQUEST, ex)
         }
     }
 }

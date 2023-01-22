@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank
 import java.util.*
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = [UniqueConstraint(columnNames = ["username"])])
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ data class User(
     var enabled: Boolean,
 
     @Column(name = "role")
-    var role: String,
+    val role: String,
 
     @Column(name = "created_at")
     var createdAt: Date,
