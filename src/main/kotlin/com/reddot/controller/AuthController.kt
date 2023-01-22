@@ -2,8 +2,10 @@ package com.reddot.controller
 
 import com.reddot.common.RestResult
 import com.reddot.data.model.RegisterRequest
-import com.reddot.data.model.RegisterResponse
 import com.reddot.service.AuthService
+import jakarta.validation.ConstraintViolationException
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -11,38 +13,24 @@ import org.springframework.web.bind.annotation.*
 class AuthController(val authService: AuthService) {
 
     @PostMapping("/register")
-    fun signup(@RequestBody registerRequest: RegisterRequest): RestResult<RegisterResponse> {
+    fun signup(@RequestBody registerRequest: RegisterRequest): ResponseEntity<Any> {
         try {
-            val result = authService.signup(registerRequest);
-            return RestResult(
-                code = 200,
-                status = "OK",
-                data = result
-            )
-        }catch(exception: Exception) {
-            return RestResult(
-                code = 400,
-                status = "BAD REQUEST",
-                data = RegisterResponse("user failed on register account")
-            )
+            val result = authService.register(registerRequest);
+            return RestResult.build("account registration success", HttpStatus.OK, result)
+        }catch(validator: ConstraintViolationException){
+            return RestResult.build("account registration success", HttpStatus.BAD_REQUEST, validator)
+        }catch(ex: Exception) {
+            return RestResult.build("account failed to create", HttpStatus.INTERNAL_SERVER_ERROR, "registration account failed")
         }
     }
 
     @PostMapping("/accountVerification/{token}")
-    fun verifyAccount(@PathVariable token: String): RestResult<String> {
+    fun verifyAccount(@PathVariable token: String): ResponseEntity<Any> {
         try {
             val result = authService.verifyAccount(token)
-            return RestResult(
-                code = 200,
-                status = "OK",
-                data = result
-            )
+            return RestResult.build("account registration validate", HttpStatus.OK, result)
         } catch (ex: Exception) {
-            return RestResult(
-                code = 400,
-                status = "BAD REQUEST",
-                data = "failed to verification account"
-            )
+            return RestResult.build("account failed to create", HttpStatus.BAD_REQUEST, "verification account failes")
         }
     }
 }

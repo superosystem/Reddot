@@ -11,6 +11,9 @@ data class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
+    @NotBlank(message = "name is not empty")
+    var name: String,
+
     @NotBlank(message = "username is not empty")
     var username: String,
 
@@ -22,6 +25,9 @@ data class User(
 
     @Column(name = "is_enable")
     var enabled: Boolean,
+
+    @Column(name = "role")
+    var role: String,
 
     @Column(name = "created_at")
     var createdAt: Date,
