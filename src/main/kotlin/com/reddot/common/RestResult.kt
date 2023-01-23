@@ -5,13 +5,13 @@ import org.springframework.http.ResponseEntity
 
 class RestResult {
     companion object {
-        fun build(message: String, status: HttpStatus, data: Any): ResponseEntity<Any> {
+        fun build(status: String, code: HttpStatus, data: Any): ResponseEntity<Any> {
             val result: MutableMap<String, Any> =  mutableMapOf(
-                "message" to message,
-                "status" to status.value(),
+                "code" to code.value(),
+                "status" to status,
                 "data" to data
             )
-            return ResponseEntity<Any>(result, status)
+            return ResponseEntity<Any>(result, code)
         }
     }
 }

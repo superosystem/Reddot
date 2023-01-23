@@ -1,6 +1,6 @@
 package com.reddot.security
 
-import com.reddot.exception.ResourceNotFoundException
+import com.reddot.exception.NotFoundException
 import com.reddot.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -15,7 +15,8 @@ class UserDetailsServiceImpl(
         try {
             return UserDetailsImpl.build(userRepository.findByUsername(username))
         }catch(ex: Exception) {
-            throw ResourceNotFoundException("username is not found")
+            throw NotFoundException()
         }
     }
+
 }

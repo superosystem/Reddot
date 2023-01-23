@@ -56,4 +56,5 @@ class UserDetailsImpl() : UserDetails {
     override fun isEnabled(): Boolean {
         return this.isEnable
     }
+
 }

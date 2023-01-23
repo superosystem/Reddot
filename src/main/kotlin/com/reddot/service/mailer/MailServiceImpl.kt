@@ -1,8 +1,6 @@
 package com.reddot.service.mailer
 
 import com.reddot.data.vo.NotificationEmail
-import com.reddot.exception.MailReddotException
-import org.springframework.mail.MailException
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.mail.javamail.MimeMessagePreparator
@@ -29,8 +27,8 @@ class MailServiceImpl(
         }
         try {
             mailSender.send(message)
-        }catch (ex: MailException) {
-            throw MailReddotException("Failed to send email activation account")
+        }catch (ex: Exception) {
+            throw com.reddot.exception.MailException("failed to send activation account")
         }
     }
 
