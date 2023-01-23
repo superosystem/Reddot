@@ -22,7 +22,7 @@ class MailServiceImpl(
                 messageHelper.setFrom("info@reddot.com")
                 messageHelper.setTo(notificationEmail.recipient)
                 messageHelper.setSubject(notificationEmail.subject)
-                messageHelper.setText(mailContentBuilder.build(notificationEmail.body))
+                messageHelper.setText(notificationEmail.body)
             }
         }
         try {

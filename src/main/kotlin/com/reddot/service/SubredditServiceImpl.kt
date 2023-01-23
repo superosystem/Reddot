@@ -10,6 +10,7 @@ import com.reddot.repository.SubredditRepository
 import jakarta.validation.ConstraintViolationException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
@@ -18,6 +19,8 @@ class SubredditServiceImpl(
     private val validationUtil: ValidationUtil,
     private val authService: AuthService,
 ) : SubredditService {
+
+    @Transactional(readOnly = true)
     override fun getAll(): List<SubredditDTO> {
         val subreddits: List<Subreddit> = subredditRepository.findAll()
         if (subreddits.isEmpty()) {
@@ -33,6 +36,7 @@ class SubredditServiceImpl(
         return from(subreddit)
     }
 
+    @Transactional
     override fun save(subredditDTO: SubredditDTO): SubredditDTO {
         try {
             validationUtil.validate(subredditDTO)

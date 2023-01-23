@@ -10,7 +10,6 @@ import com.reddot.data.model.RegisterRequest
 import com.reddot.data.model.RegisterResponse
 import com.reddot.data.vo.NotificationEmail
 import com.reddot.exception.BadRequestException
-import com.reddot.exception.NotFoundException
 import com.reddot.exception.ResourceNotFoundException
 import com.reddot.repository.UserRepository
 import com.reddot.repository.VerificationTokenRepository
