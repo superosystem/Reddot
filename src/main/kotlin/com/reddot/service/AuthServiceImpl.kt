@@ -4,10 +4,7 @@ import com.reddot.common.Constants
 import com.reddot.common.ValidationUtil
 import com.reddot.data.entity.User
 import com.reddot.data.entity.VerificationToken
-import com.reddot.data.model.LoginRequest
-import com.reddot.data.model.LoginResponse
-import com.reddot.data.model.RegisterRequest
-import com.reddot.data.model.RegisterResponse
+import com.reddot.data.model.*
 import com.reddot.data.vo.NotificationEmail
 import com.reddot.exception.BadRequestException
 import com.reddot.exception.ResourceNotFoundException
@@ -37,7 +34,8 @@ class AuthServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val mailContentBuilder: MailContentBuilder,
     private val authenticationManager: AuthenticationManager,
-    private val tokenProvider: TokenProvider
+    private val tokenProvider: TokenProvider,
+    private val refreshTokenService: RefreshTokenService
 ) : AuthService {
 
     @Transactional
@@ -97,8 +95,32 @@ class AuthServiceImpl(
         SecurityContextHolder.getContext().authentication = auth
         val  principal: UserDetailsImpl = auth.principal as UserDetailsImpl
         val token: String = tokenProvider.generateToken(auth)
+        val tokenExpired = tokenProvider.getTokenExpirationInMillis()
+        val refreshToken = refreshTokenService.generateRefreshToken()
 
-        return LoginResponse(principal.username, token)
+        return LoginResponse(
+            username = principal.username,
+            token = token,
+            expiresAt = Instant.now().plusMillis(tokenExpired),
+            refreshToken = refreshToken.token
+        )
+    }
+
+    override fun refreshToken(refreshTokenRequest: RefreshTokenRequest): LoginResponse {
+        try {
+            refreshTokenService.validateRefreshToken(refreshTokenRequest.refreshToken)
+            val newToken: String = tokenProvider.generateRefreshToken(refreshTokenRequest.username)
+            val tokenExpired = tokenProvider.getTokenExpirationInMillis()
+
+            return LoginResponse(
+                username = refreshTokenRequest.username,
+                token = newToken,
+                expiresAt = Instant.now().plusMillis(tokenExpired),
+                refreshToken = refreshTokenRequest.refreshToken
+            )
+        }catch(ex: Exception) {
+            throw BadRequestException("cannot get new token")
+        }
     }
 
     @Transactional(readOnly = true)
