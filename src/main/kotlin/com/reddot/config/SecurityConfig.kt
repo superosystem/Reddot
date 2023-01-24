@@ -6,6 +6,7 @@ import com.reddot.security.jwt.JwtAuthTokenFilter
 import com.reddot.security.jwt.TokenProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -41,6 +42,10 @@ class SecurityConfig(
             .and()
             .authorizeHttpRequests()
             .requestMatchers("/api/v1/auth/**").permitAll()
+            .requestMatchers(HttpMethod.GET,"/api/v1/subreddit").permitAll()
+            .requestMatchers(HttpMethod.GET,"/api/v1/posts").permitAll()
+            .requestMatchers(HttpMethod.GET,"/api/v1/posts/**").permitAll()
+            .requestMatchers("/docs/**").permitAll()
             .anyRequest().authenticated()
         http.authenticationProvider(authenticationProvider())
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)

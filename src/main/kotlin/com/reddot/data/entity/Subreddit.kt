@@ -4,11 +4,11 @@ import jakarta.persistence.*
 import java.util.*
 
 @Entity
-@Table(name = "subbreddit")
+@Table(name = "subreddit")
 data class Subreddit(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long?,
 
     @Column(name = "name")
     var name: String,
@@ -18,7 +18,7 @@ data class Subreddit(
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "posts", referencedColumnName = "id")
-    var posts: List<Post>,
+    var posts: List<Post>?,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "id")

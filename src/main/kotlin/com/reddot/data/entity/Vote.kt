@@ -9,7 +9,7 @@ import java.util.*
 data class Vote(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    val id: Long,
+    val id: Long?,
 
     @Column(name = "vote_type")
     var voteType: VoteType,

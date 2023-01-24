@@ -8,13 +8,15 @@ import java.util.*
 data class Post(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long?,
 
     @Column(name = "post_name")
     var postName: String,
 
     @Column(name = "url")
     var url: String,
+
+    var description: String,
 
     @Column(name = "vote_count")
     var voteCount: Int,

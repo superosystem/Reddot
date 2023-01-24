@@ -5,18 +5,17 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import java.time.Instant
 
-data class LoginResponse(
-    @field:NotBlank
-    val username: String?,
+data class CommentDTO(
+    val id: Long?,
 
     @field:NotBlank
-    val token: String?,
+    @JsonProperty("post_id")
+    var postId: Long,
 
-    @field:NotBlank
-    @JsonProperty("expired_at")
-    var expiresAt: Instant,
+    var createdDate: Instant?,
 
     @field:NotEmpty
-    @JsonProperty("refresh_token")
-    var refreshToken: String
+    var text: String,
+
+    var username: String
 )
