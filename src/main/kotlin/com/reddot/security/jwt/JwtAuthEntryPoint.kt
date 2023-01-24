@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 import java.io.IOException
 @Component
 class JwtAuthEntryPoint : AuthenticationEntryPoint {
+
     @Throws(IOException::class)
     override fun commence(
         request: HttpServletRequest,
@@ -17,4 +18,5 @@ class JwtAuthEntryPoint : AuthenticationEntryPoint {
         // 401 when trying to access without providing valid credentials
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,  "error: unauthorized")
     }
+
 }

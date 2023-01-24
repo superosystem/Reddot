@@ -38,22 +38,25 @@ class TokenProvider(
         val validity = Date(Date().time + tokenValidityInMilliseconds)
 
         return Jwts.builder()
-            .setSubject(userPrincipal.username)
-            .setIssuedAt(Date())
-            .signWith(key, SignatureAlgorithm.HS512)
+            .setIssuer("self")
+            .setIssuedAt(Date(Date().time))
             .setExpiration(validity)
+            .setSubject(userPrincipal.username)
+            .claim("scope","ROLE_USER")
+            .signWith(key, SignatureAlgorithm.HS512)
             .compact()
     }
 
-    fun generateRefteshToken(authentication: Authentication): String {
-        val userPrincipal: UserDetailsImpl = authentication.principal as UserDetailsImpl
+    fun generateRefreshToken(username: String): String {
         val validity = Date(Date().time + tokenValidityInMilliseconds)
 
         return Jwts.builder()
-            .setSubject(userPrincipal.username)
-            .setIssuedAt(Date())
-            .signWith(key, SignatureAlgorithm.HS512)
+            .setIssuer("self")
+            .setIssuedAt(Date(Date().time))
             .setExpiration(validity)
+            .setSubject(username)
+            .claim("scope","ROLE_USER")
+            .signWith(key, SignatureAlgorithm.HS512)
             .compact()
     }
 
@@ -77,5 +80,9 @@ class TokenProvider(
 
     fun getUserNameFromJwtToken(token: String): String {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).body.subject
+    }
+
+    fun getTokenExpirationInMillis(): Long {
+        return tokenValidityInMilliseconds
     }
 }

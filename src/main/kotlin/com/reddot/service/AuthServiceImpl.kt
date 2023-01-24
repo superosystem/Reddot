@@ -4,12 +4,10 @@ import com.reddot.common.Constants
 import com.reddot.common.ValidationUtil
 import com.reddot.data.entity.User
 import com.reddot.data.entity.VerificationToken
-import com.reddot.data.model.LoginRequest
-import com.reddot.data.model.LoginResponse
-import com.reddot.data.model.RegisterRequest
-import com.reddot.data.model.RegisterResponse
+import com.reddot.data.model.*
 import com.reddot.data.vo.NotificationEmail
 import com.reddot.exception.BadRequestException
+import com.reddot.exception.ResourceNotFoundException
 import com.reddot.repository.UserRepository
 import com.reddot.repository.VerificationTokenRepository
 import com.reddot.security.UserDetailsImpl
@@ -36,7 +34,8 @@ class AuthServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val mailContentBuilder: MailContentBuilder,
     private val authenticationManager: AuthenticationManager,
-    private val tokenProvider: TokenProvider
+    private val tokenProvider: TokenProvider,
+    private val refreshTokenService: RefreshTokenService
 ) : AuthService {
 
     @Transactional
@@ -55,7 +54,6 @@ class AuthServiceImpl(
                 updatedAt = null
             )
             userRepository.save(user)
-
             val token = generateVerificationToken(user)
             val message = mailContentBuilder
                 .build("Thank you for registration to Reddot, " +
@@ -63,11 +61,9 @@ class AuthServiceImpl(
                         Constants.ACTIVATION_EMAIL + "/" + token)
             mailServiceImpl.sendMail(NotificationEmail("Please Active Your Account", registerRequest.email, message))
 
-            return RegisterResponse("account registration successfully")
+            return RegisterResponse("account registration is successful, please open the message on the email to verify the account")
         } catch (validator: ConstraintViolationException) {
-            return RegisterResponse(validator.message)
-        } catch (exception: Exception) {
-            return RegisterResponse("registration account failed")
+            throw BadRequestException(validator.message)
         }
     }
 
@@ -75,31 +71,62 @@ class AuthServiceImpl(
     override fun verifyAccount(token: String): String {
         val getTokenOptional: Optional<VerificationToken> = tokenRepository.findByToken(token)
         if (getTokenOptional.isEmpty) {
-            throw BadRequestException("invalid token")
+            throw ResourceNotFoundException("token verification is not valid")
         }
         val username = getTokenOptional.get().user.username
         val user: User = userRepository.findByUsername(username)
-
         try {
             user.enabled = true
             userRepository.save(user)
-            return "account has been verification"
+
+            return "account verified successfully"
         }catch (ex: Exception) {
-            throw BadRequestException("failed to verify")
+            throw BadRequestException("account failed to verify")
         }
     }
 
-    override fun login(loginReguest: LoginRequest): LoginResponse {
+    override fun login(loginRequest: LoginRequest): LoginResponse {
         val auth: Authentication = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(loginReguest.username, loginReguest.password)
+            UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
         )
         if (!auth.isAuthenticated) {
-            throw BadRequestException("username or password is wrong")
+            throw BadRequestException("wrong username or password")
         }
         SecurityContextHolder.getContext().authentication = auth
         val  principal: UserDetailsImpl = auth.principal as UserDetailsImpl
         val token: String = tokenProvider.generateToken(auth)
-        return LoginResponse(principal.username, token)
+        val tokenExpired = tokenProvider.getTokenExpirationInMillis()
+        val refreshToken = refreshTokenService.generateRefreshToken()
+
+        return LoginResponse(
+            username = principal.username,
+            token = token,
+            expiresAt = Instant.now().plusMillis(tokenExpired),
+            refreshToken = refreshToken.token
+        )
+    }
+
+    override fun refreshToken(refreshTokenRequest: RefreshTokenRequest): LoginResponse {
+        try {
+            refreshTokenService.validateRefreshToken(refreshTokenRequest.refreshToken)
+            val newToken: String = tokenProvider.generateRefreshToken(refreshTokenRequest.username)
+            val tokenExpired = tokenProvider.getTokenExpirationInMillis()
+
+            return LoginResponse(
+                username = refreshTokenRequest.username,
+                token = newToken,
+                expiresAt = Instant.now().plusMillis(tokenExpired),
+                refreshToken = refreshTokenRequest.refreshToken
+            )
+        }catch(ex: Exception) {
+            throw BadRequestException("cannot get new token")
+        }
+    }
+
+    @Transactional(readOnly = true)
+    override fun getCurrentUser(): User {
+        val authentication = SecurityContextHolder.getContext().authentication
+        return userRepository.findByUsername(authentication.name)
     }
 
     private fun encodePassword(password: String): String {

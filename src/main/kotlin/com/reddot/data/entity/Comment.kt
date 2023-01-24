@@ -2,6 +2,7 @@ package com.reddot.data.entity
 
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
+import java.time.Instant
 import java.util.*
 
 @Entity
@@ -9,10 +10,12 @@ import java.util.*
 data class Comment(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long?,
 
     @NotNull
     var text: String,
+
+    var createdDate: Instant,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", referencedColumnName = "id")
