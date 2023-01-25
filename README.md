@@ -2,6 +2,10 @@
 
 Example web application with Spring Framework.
 
+## TODO
+- [ ] Make Frontend
+
+
 ### Reference Documentation
 For further reference, please consider the following sections:
 
