@@ -14,11 +14,11 @@ data class Subreddit(
     var createdAt: Date,
     var updatedAt: Date?,
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "posts", referencedColumnName = "id")
-    var posts: List<Post>?,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    var user: User
+    var user: User,
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "posts", referencedColumnName = "id")
+    var posts: List<Post>?
 )

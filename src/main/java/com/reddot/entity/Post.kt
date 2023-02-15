@@ -16,7 +16,7 @@ data class Post(
     var createdAt: Date,
     var updatedAt: Date?,
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     var user: User,
 

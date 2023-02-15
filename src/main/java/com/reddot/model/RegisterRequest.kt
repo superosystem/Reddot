@@ -1,5 +1,6 @@
 package com.reddot.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 
@@ -17,5 +18,6 @@ data class RegisterRequest (
     val password: String,
 
     @field:NotBlank
+    @JsonProperty("confirm_password")
     val confirmPassword: String?
 )

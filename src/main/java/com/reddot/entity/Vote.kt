@@ -7,7 +7,7 @@ import java.util.*
 @Table(name = "vote")
 data class Vote(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
     var voteType: VoteEnum,
     var createdAt: Date,
