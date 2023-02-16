@@ -2,9 +2,11 @@ package com.reddot.repository
 
 import com.reddot.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import java.util.*
 
-@Repository
-interface UserRepository : JpaRepository<User, Long> {
-    fun findByUsername(username: String): User
+@EnableJpaRepositories
+interface UserRepository : JpaRepository<User, UUID> {
+    fun findByUsername(username: String): User?
+    fun findByEmail(email: String): User?
 }

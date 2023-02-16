@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS refresh_token;
 CREATE TABLE public.refresh_token (
-    id bigint NOT NULL PRIMARY KEY,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
     token character varying(255) NOT NULL,
     create_date timestamp(6) with time zone
 );

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface VoteRepository : JpaRepository<Vote, Long> {
+interface VoteRepository : JpaRepository<Vote, UUID> {
     fun findTopByPostAndUserOrderByIdDesc(post: Post, currentUser: User): Optional<Vote>
 }

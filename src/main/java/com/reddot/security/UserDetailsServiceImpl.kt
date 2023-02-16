@@ -1,5 +1,6 @@
 package com.reddot.security
 
+import com.reddot.exception.BadRequestException
 import com.reddot.exception.NotFoundException
 import com.reddot.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
@@ -12,7 +13,8 @@ class UserDetailsServiceImpl(
 ) : UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails {
         try {
-            return UserDetailsImpl.build(userRepository.findByUsername(username))
+            val user = userRepository.findByUsername(username) ?: throw BadRequestException("username is not registered")
+            return UserDetailsImpl.build(user)
         }catch(ex: Exception) {
             throw NotFoundException()
         }

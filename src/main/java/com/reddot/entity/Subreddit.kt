@@ -1,14 +1,17 @@
 package com.reddot.entity
 
 import jakarta.persistence.*
+import org.hibernate.annotations.GenericGenerator
+import java.io.Serializable
 import java.util.*
 
 @Entity
 @Table(name = "subreddit")
 data class Subreddit(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    val id: UUID,
     var name: String,
     var description: String,
     var createdAt: Date,
@@ -21,4 +24,4 @@ data class Subreddit(
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "posts", referencedColumnName = "id")
     var posts: List<Post>?
-)
+) : Serializable

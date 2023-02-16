@@ -16,9 +16,9 @@ run-dev:
 .PHONY: migrate-up
 migrate-up:
 	@echo "Database Migration Up..."
-	flyway migrate
+	flyway migrate -configFiles="src/main/resources/flyway.conf"
 
 .PHONY: migrate-clean
 migrate-clean:
 	@echo "Database Migration Clean Up..."
-	flyway clean
+	flyway clean -configFiles="src/main/resources/flyway.conf"
