@@ -1,5 +1,5 @@
 package com.reddot.model
 
-data class SignupResponse (
+data class MessageResponse (
     var message: String
 )

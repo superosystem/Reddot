@@ -1,9 +1,10 @@
 package com.reddot.service
 
-import com.reddot.model.SignupRequest
-import com.reddot.model.SignupResponse
+import com.reddot.model.*
 
 interface AuthService {
-    fun signup(param: SignupRequest) : SignupResponse
-    fun activeAccount(request: String): SignupResponse
+    fun signup(param: SignupRequest): MessageResponse
+    fun activeAccount(request: String): MessageResponse
+    fun signin(param: SigninRequest): SigninResponse
+    fun refreshToken(param: RefreshTokenRequest) : SigninResponse
 }

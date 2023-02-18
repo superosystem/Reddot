@@ -1,8 +1,6 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 DROP TABLE IF EXISTS users;
 CREATE TABLE public.users (
-    id uuid DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     name character varying(100) NOT NULL,
     username character varying(100) NOT NULL,
     email character varying(100) NOT NULL,

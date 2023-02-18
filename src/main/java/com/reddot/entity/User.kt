@@ -1,17 +1,14 @@
 package com.reddot.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.GenericGenerator
-import java.io.Serializable
 import java.util.*
 
 @Entity
 @Table(name = "users", uniqueConstraints = [UniqueConstraint(columnNames = ["username"])])
 data class User (
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    val id: UUID?,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long?,
     @Column(name = "name")
     var name: String,
     @Column(name = "username")
@@ -28,4 +25,4 @@ data class User (
     var createdAt: Date,
     @Column(name = "updated_at")
     var updatedAt: Date?
-) : Serializable
+)
