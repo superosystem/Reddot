@@ -8,6 +8,7 @@ Example web application with Spring Framework.
 
 ## API SPEC
 
+http://localhost:8080/docs/swagger-ui/index.html
 
 
 ### Reference Documentation
