@@ -4,7 +4,7 @@ import com.reddot.entity.Post
 import com.reddot.entity.User
 import com.reddot.entity.Vote
 import org.springframework.data.jpa.repository.JpaRepository
-import java.util.*
+import java.util.Optional
 
 
 interface VoteRepository : JpaRepository<Vote, Long> {

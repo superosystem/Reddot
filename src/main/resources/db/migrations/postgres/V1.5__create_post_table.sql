@@ -9,11 +9,8 @@ CREATE TABLE public.post (
     updated_at timestamp(6) without time zone,
     user_id bigint NOT NULL,
     subreddit_id bigint NOT NULL,
-    posts bigint NOT NULL
+    posts bigint,
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id),
+    CONSTRAINT fk_subreddit_id FOREIGN KEY (subreddit_id) REFERENCES public.subreddit(id),
+    CONSTRAINT fk_posts FOREIGN KEY (posts) REFERENCES public.subreddit(id)
 );
-
-ALTER TABLE ONLY public.post ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-ALTER TABLE ONLY public.post ADD CONSTRAINT fk_subreddit_id FOREIGN KEY (subreddit_id) REFERENCES public.subreddit(id);
-
-ALTER TABLE ONLY public.post ADD CONSTRAINT fk_posts FOREIGN KEY (posts) REFERENCES public.subreddit(id);

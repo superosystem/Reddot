@@ -121,6 +121,12 @@ class AuthServiceImpl(
         )
     }
 
+    @Transactional(readOnly = true)
+    override fun getCurrentUser(): User {
+        val authentication = SecurityContextHolder.getContext().authentication
+        return userRepository.findByUsername(authentication.name) ?: throw BadRequestException("Not user found")
+    }
+
     private fun encodePassword(password: String): String {
         return passwordEncoder.encode(password)
     }

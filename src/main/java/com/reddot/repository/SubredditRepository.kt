@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 
 interface SubredditRepository : JpaRepository<Subreddit, Long> {
-    fun findByName(subredditName: String): List<Subreddit>
+    fun findByName(subredditName: String): Subreddit?
 }

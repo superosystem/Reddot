@@ -1,5 +1,6 @@
 package com.reddot.service
 
+import com.reddot.entity.User
 import com.reddot.model.*
 
 interface AuthService {
@@ -7,4 +8,5 @@ interface AuthService {
     fun activeAccount(request: String): MessageResponse
     fun signin(param: SigninRequest): SigninResponse
     fun refreshToken(param: RefreshTokenRequest) : SigninResponse
+    fun getCurrentUser(): User
 }

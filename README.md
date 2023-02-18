@@ -6,6 +6,10 @@ Example web application with Spring Framework.
 - [ ] Make Frontend
 
 
+## API SPEC
+
+
+
 ### Reference Documentation
 For further reference, please consider the following sections:
 

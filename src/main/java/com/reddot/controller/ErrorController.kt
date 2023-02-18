@@ -1,6 +1,7 @@
 package com.reddot.controller
 
 import com.reddot.exception.BadRequestException
+import com.reddot.exception.NotFoundException
 import com.reddot.exception.UnauthorizedException
 import com.reddot.model.ErrorResponse
 import jakarta.validation.ConstraintViolationException
