@@ -1,4 +1,4 @@
-# REDDOT [![REDDOT CI](https://github.com/gusrylmubarok/reddot/actions/workflows/reddot.yml/badge.svg)](https://github.com/gusrylmubarok/reddot/actions/workflows/reddot.yml)
+# REDDOT [![REDDOT CI](https://github.com/gusrylmubarok/reddot/actions/workflows/reddot.yml/badge.svg)](https://github.com/gusrylmubarok/reddot/actions/workflows/ci.yml)
 
 Example web application with Spring Framework.
 
