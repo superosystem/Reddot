@@ -6,6 +6,11 @@ Example web application with Spring Framework.
 - [ ] Make Frontend
 
 
+## API SPEC
+
+http://localhost:8080/docs/swagger-ui/index.html
+
+
 ### Reference Documentation
 For further reference, please consider the following sections:
 

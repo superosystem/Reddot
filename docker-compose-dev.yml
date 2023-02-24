@@ -1,0 +1,23 @@
+version: "2.16"
+
+services:
+  database:
+    image: postgres:15.2-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=reddotdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - reddotdb:/var/lib.postgresql/data
+
+volumes:
+  reddotdb:
+    driver: local
+
+networks:
+  reddot:
+    driver: bridge
